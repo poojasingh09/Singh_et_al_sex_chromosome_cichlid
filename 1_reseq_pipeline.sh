@@ -122,8 +122,11 @@ qsub -pe mpi 32 -b y -cwd -N RG -e rg.err -o rg.log /bin/sh read_group.sh
 sh dedup.sh
 
 
+#12 get coverage across bams
 
-#12 samtools call SNPS and indels
+sh cov.sh
+
+#13 samtools call SNPS and indels
 
 
 sh varcall_all_Onil2.sh
