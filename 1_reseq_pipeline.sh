@@ -195,54 +195,6 @@ done
 
 /usr/bin/java -Xms10G -Xmx320G -jar /cl_tmp/singh/tools/gatk/GenomeAnalysisTK.jar -T CombineGVCFs -R /cl_tmp/singh/cichlid_reference_genomes/Neolamprologous_brichardi/N_brichardi_v1.assembly.fasta --variant gVCF_list2.list -o combined.realigned.filt.recode.vcf
 
-#15 make phlyogeny
-
-#bam2fasta
-for i in `ls *.Nb.bt2.RG.dedup.sorted.realinged.bam`; 
-
-do
-
-echo qsub -l h_vmem=100G -b y -cwd -N bam2fasta -e b2f.err -o b2f.log /cl_tmp/singh/tools/angsd/angsd -doFasta 2 -doCounts 1 -i $i -out $i".fasta"
-
-done
-
-#get genic fasta
-
-for i in `ls *.fasta | cut -f 1 -d "."`;
-
-do
-
-/cl_tmp/singh/tools/samtools-1.3/bin/samtools faidx $i".fasta"
-
-/cl_tmp/singh/tools/bedtools-2.25/bin/bedtools getfasta -name -fi $i".fasta" -bed genes.bed -fo $i".genes.fasta"
-
-done
-
-#align fasta
-for i in `ls *.fa | cut -f -4 -d "."`;
-
-do
-
-/cl_tmp/singh/tools/mafft-7.273-with-extensions/bin/mafft $i".fa" > $i".aligned.fa"
-
-/usr/bin/java -jar /cl_tmp/singh/tools/BMGE-1.12/BMGE.jar -i $i".aligned.fa" -t DNA -of $i".aligned.faa"
-
-/usr/bin/java -jar /cl_tmp/singh/tools/BMGE-1.12/BMGE.jar -i $i".aligned.fa" -t DNA -op $i".aligned.phylip"
-
-done
-
-
-## make raxml gene trees
-
-for i in `ls *.fas`;
-
-do
-
-#echo $i
-/cl_tmp/singh/tools/raxml/raxmlHPC-PTHREADS -T 10 -f a -s $i -p 589375 -x 12345 -N 100 -m GTRCAT -w /cl_tmp/singh/taborsky_callipterus/mapped_data/raxml_phylogeny/aligned/gene_trees/ -n $i
-
-done
-
-## make astral species tree
+#15 make phlyogeny: this part is detailed in the next document
 
 
